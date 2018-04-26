@@ -12,7 +12,7 @@ func TestJsonOutputForOrder(t *testing.T) {
 	buf := initRootCmd(t, "", config.OutputModeJSON)
 
 	bigVal, _ := pb.NewBigIntFromString("1000000000000000000000000000")
-	printSearchResults(rootCmd, []*pb.Order{{
+	printOrdersList(rootCmd, []*pb.Order{{
 		Price: bigVal,
 	},
 	})

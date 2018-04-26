@@ -184,16 +184,20 @@ func convertTransactionInfo(tx *types.Transaction) map[string]interface{} {
 	}
 }
 
-func printSearchResults(cmd *cobra.Command, orders []*pb.Order) {
+func printOrdersList(cmd *cobra.Command, orders []*pb.Order) {
 	if isSimpleFormat() {
 		if len(orders) == 0 {
 			cmd.Println("No orders found")
 			return
 		}
 
-		for i, order := range orders {
-			cmd.Printf("%d) %s %s | price = %s\r\n", i+1,
-				order.OrderType.String(), order.GetId(), order.GetPrice().ToPriceString())
+		cmd.Println("        ID | type |        total price       |   duration ")
+		for _, order := range orders {
+			cmd.Printf("%10s | %4s | %20s SNM | %10s\r\n",
+				order.GetId(),
+				order.OrderType.String(),
+				order.TotalPrice(),
+				(time.Second * time.Duration(order.Duration)).String())
 		}
 	} else {
 		showJSON(cmd, map[string]interface{}{"orders": orders})
@@ -204,13 +208,17 @@ func printOrderDetails(cmd *cobra.Command, order *pb.Order) {
 	if isSimpleFormat() {
 		cmd.Printf("ID:             %s\r\n", order.Id)
 		cmd.Printf("Type:           %s\r\n", order.OrderType.String())
-		cmd.Printf("Price:          %s\r\n", order.GetPrice().ToPriceString())
+		cmd.Printf("Duration:       %s\r\n", (time.Duration(order.GetDuration()) * time.Second).String())
+		cmd.Printf("Total price:    %s SNM\r\n", order.TotalPrice())
 
 		cmd.Printf("AuthorID:       %s\r\n", order.GetAuthorID())
-		cmd.Printf("CounterpartyID: %s\r\n", order.GetCounterpartyID())
-		cmd.Printf("Benchmarks:     %s\r\n", order.GetBenchmarks())
+		if len(order.GetCounterpartyID()) > 0 {
+			cmd.Printf("CounterpartyID: %s\r\n", order.GetCounterpartyID())
+		}
 
 		// todo: find a way to print resources as they presented into MarketOrder struct.
+		cmd.Printf("Benchmarks:     %#v\r\n", order.GetBenchmarks())
+
 	} else {
 		showJSON(cmd, order)
 	}

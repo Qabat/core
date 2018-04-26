@@ -3,6 +3,7 @@ package sonm
 import (
 	"errors"
 	"fmt"
+	"math/big"
 	"strings"
 	"time"
 )
@@ -95,4 +96,10 @@ func (m *Benchmarks) GPUCashHashrate() uint64 {
 
 func (m *Benchmarks) GPURedshift() uint64 {
 	return m.Get(11)
+}
+
+func (m *Order) TotalPrice() string {
+	duration := big.NewInt(int64(m.Duration))
+	price := big.NewInt(0).Mul(m.Price.Unwrap(), duration)
+	return NewBigInt(price).ToPriceString()
 }
