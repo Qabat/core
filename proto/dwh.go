@@ -1,5 +1,7 @@
 package sonm
 
+import "strings"
+
 const (
 	NumNetflags = 3
 )
@@ -37,4 +39,35 @@ func NetflagsToUint(flags [NumNetflags]bool) uint64 {
 	}
 
 	return netflags
+}
+
+func (r *DealsRequest) ToLower() {
+	r.ConsumerID = strings.ToLower(r.ConsumerID)
+	r.SupplierID = strings.ToLower(r.SupplierID)
+	r.MasterID = strings.ToLower(r.MasterID)
+}
+
+func (r *OrdersRequest) ToLower() {
+	r.AuthorID = strings.ToLower(r.AuthorID)
+	r.CounterpartyID = strings.ToLower(r.CounterpartyID)
+}
+
+func (o *Order) ToLower() {
+	o.AuthorID = strings.ToLower(o.AuthorID)
+	o.CounterpartyID = strings.ToLower(o.CounterpartyID)
+}
+
+func (d *Deal) ToLower() {
+	d.ConsumerID = strings.ToLower(d.ConsumerID)
+	d.SupplierID = strings.ToLower(d.SupplierID)
+	d.MasterID = strings.ToLower(d.MasterID)
+}
+
+func (v *Validator) ToLower() {
+	v.Id = strings.ToLower(v.Id)
+}
+
+func (c *Certificate) ToLower() {
+	c.OwnerID = strings.ToLower(c.OwnerID)
+	c.ValidatorID = strings.ToLower(c.ValidatorID)
 }
